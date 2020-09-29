@@ -4,31 +4,27 @@
          poly-sub
          poly-mul)
 
-(define (poly-add a b)
+(define (zeroes n)
+  (if (< n 1)
+    '()
+    (cons 0 (zeroes (- n 1)))))
+
+(define (poly-add as bs)
+  "add two polynomials together"
   (cond
-    ((or (null? a) (null? b))
-      '())
-    ((< (length a) (length b))
-      (cons (car b) (poly-add a (cdr b))))
-    ((> (length a) (length b))
-      (cons (car a) (poly-add (cdr a) b)))
-    (#t
-      (cons (+ (car a) (car b)) (poly-add (cdr a) (cdr b))))))
+    [(null? as) '()]
+    [(> (length as) (length bs)) (cons (car as)(poly-add (cdr as) bs))]
+    [(< (length as) (length bs)) (cons (car bs)(poly-add as (cdr bs)))]
+    [#t (cons (+ (car as) (car bs)) (poly-add (cdr as) (cdr bs)))]))
 
-(define (poly-sub x y)
-  (define (negative-list xs)
-    (if (null? xs)
-      '()
-      (cons (- (car xs)) (negative-list (cdr xs)))))
-  (poly-add x (negative-list y))) 
+(define (poly-sub as bs)
+  "subtract poly 'bs' from 'as'"
+  (poly-add as (map (lambda (x) (- x)) bs)))
 
-(define (poly-mul x y)
-  (define (zeroes n)
-    (if (= 0 n)
-      '()
-      (cons 0 (zeroes (- n 1)))))
-  (if (null? y)
-    (list 0)
-    (poly-add 
-      (append (map (lambda (z) (* z (car y))) x) (zeroes (- (length y) 1)))
-      (poly-mul x (cdr y)))))
+(define (poly-mul as bs)
+  "multiply two polynomials together"
+  (if (null? as)
+    as
+    (poly-add
+      (append (map (lambda (x) (* x (car as))) bs) (zeroes (- (length as) 1)))
+      (poly-mul (cdr as) bs))))
