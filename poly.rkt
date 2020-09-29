@@ -13,8 +13,8 @@
   "add two polynomials together"
   (cond
     [(null? as) '()]
-    [(> (length as) (length bs)) (cons (car as)(poly-add (cdr as) bs))]
-    [(< (length as) (length bs)) (cons (car bs)(poly-add as (cdr bs)))]
+    [(> (length as) (length bs)) (cons (car as) (poly-add (cdr as) bs))]
+    [(< (length as) (length bs)) (cons (car bs) (poly-add as (cdr bs)))]
     [#t (cons (+ (car as) (car bs)) (poly-add (cdr as) (cdr bs)))]))
 
 (define (poly-sub as bs)
